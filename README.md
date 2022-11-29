@@ -1,7 +1,7 @@
 # LG_InformatikQ1
 Dies ist eine Repo mit allen Unterlagen der Informatik Q1 Veranstaltung von Torben Friedrich Görner
 
-Hier finden Sie die Unterlagen(PDFs) sowie den gemeinsam entwickelten Programmcode.
+Hier finden Sie die Unterlagen meiner Vorlesungen (PDFs), Aufgabenzettel, sowie den gemeinsam entwickelten Programmcode (Jeweils als Python und Jupiter Notebook Datei).
 # Plan für die nächsten Wochen
 
 Der Plan ist erstmal nur eine grobe Übersicht und kann sich ggf. ändern.<br> <br>
