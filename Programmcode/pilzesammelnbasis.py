@@ -7,6 +7,11 @@ Original file is located at
     https://colab.research.google.com/drive/1q1LFUmSSCcV_1knjle4tHM46vZVJBx45
 """
 
+## Pilzsammler:innen sammeln verschiedene Pilzsorten. Sie wollen eine Pilzpfanne
+## kochen. Dabei können sie am Ende eines Tages ihre Pilze teilen oder nicht.
+## Teilen Sie ihre Pilze, so müssen sie nur 1€ für weitere Pilze ausgeben.
+## Teilen Sie nicht, so müssen beide 3€ für weitere Pilze ausgeben.
+## Teilt Person A, Person B aber nicht, so muss Person B nichts ausgeben und Person A 5€
 from math import *
 from random import randrange, seed, shuffle
 
@@ -16,17 +21,30 @@ from random import randrange, seed, shuffle
 class Picker:                # Basis Klasse (Oberklasse) für Pilzsammler:innen
   def __init__(self, name):
     self.name = name
-    self.last = 0  # Letzte durchgeführte Handlung
-    self.costs = 0 # Kosten für Pilzsammler:inn
+    self.last = {}     # Letzte durchgeführte Handlungen für meine Gegenüber (dic mit name und letzter handlung(0,1))
+    self.opp_last = {} # Letzte durchgeführte Handlungen meiner Gegenüber (dic mit name und letzter handlung(0,1))
+    self.costs = 0     # Kosten für Pilzsammler:inn
+    self.days = 0      # Anzahl der Tage an denen gesammelt wurde
 
   def inc(self, n):
     """Erhöhe Kosten um n"""
     self.costs += n
+    self.days += 1
+
+  def init(self, opp_list):
+    """Initalisierung des dictionaries opp_last mit 
+    namen als Key und jeweils 0 als Value. """
+    for person in opp_list:
+      if not(person.name is self.name): 
+        self.opp_last[person.name] = 0
+        self.last[person.name] = 0
+
 
 class Coop(Picker):          # Teilt die Pilze immer
   def share(self, opp):
-    self.last = 0
-    return self.last
+    self.last[opp.name] = 0
+    self.opp_last[opp.name] = opp.last[self.name]
+    return self.last[opp.name]
 
 ## Erweitere hier den Code mit deinen Strategien
 
@@ -37,47 +55,57 @@ def simulateDay(a,b,n):
   ascore = bscore = 0
   for i in range(0,n):
     x = a.share(b), b.share(a)
-    if x == (1,1):                   # Beide teilen (Kosten 1) 
+    if x == (0,0):                   # Beide teilen (Kosten 1) 
       a.inc(1); b.inc(1)
-    elif x == (0,1):                 # B teilt nicht (Kosten A = 3, B = 0)
-      a.inc(3); b.inc(0)
-    elif x == (1,0):                 # A teilt nicht (Kosten B = 3, A = 0)
-      a.inc(0); b.inc(3)
-    elif x == (1,1):                 # Beide teilen nicht (Kosten = 2)                 
-      a.inc(2); b.inc(2)
+    elif x == (0,1):                 # B teilt nicht (Kosten A = 5, B = 0)
+      a.inc(5); b.inc(0)
+    elif x == (1,0):                 # A teilt nicht (Kosten B = 5, A = 0)
+      a.inc(0); b.inc(5)
+    elif x == (1,1):                 # Beide teilen nicht (Kosten = 3)                 
+      a.inc(3); b.inc(3)
 
 
 ## Erstellen von Pilzsammler:innen 
 
+ni1 = Coop('Nice1')
+ni2 = Coop('Nice2') 
+ni3 = Coop('Nice3') 
+ni4 = Coop('Nice4') 
+ni5 = Coop('Nice5') 
+ni6 = Coop('Nice6') 
+ni7 = Coop('Nice7') 
+
+persons = [ni1,ni2,ni3,ni4,ni5,ni6,ni7]     # Liste der Pilzsammler:innen
+
 ## Erstelle hier deine Pilzsammler:innen und 
-## baue eine Liste 'persons' aus ihnen wie in Aufgabe 2.
-
-persons = []     # Liste der Pilzsammler:innen
-
+## Baue eine Liste 'persons' aus ihnen wie in Aufgabe 2.
+## Ersetze dafür die oben angelegte Demo Liste aus nur Coop Pilzsammler:innen
 
 def simulateDays(days):
-  """Simulation von teilenden oder nicht teilenden Pilzsammler:innen
-  über mehrere Tage"""
+  """Simulation von teilenden oder nicht teilenden Pilzsammler:innen über mehrere Tage"""
   seed()
   totalpen = 0
 
-  for day in range(0, days): # ausführen der Gegenüberstellung (Teilen oder nicht)
+  for person in persons:
+    person.init(persons)
+
+  for day in range(0, days):                         # Ausführen der Gegenüberstellung (Teilen oder nicht)
     shuffle(persons)           
     simulateDay(persons[0], persons[1], 6) 
 
-  results = {} # dictionary der Personen (Namen) und ihren Kosten
+  results = {}                                       # Dictionary der Personen (Namen) und ihren Kosten
 
   for person in persons: 
-    results[person.costs] = person.name       
+    results[person.name] = person.costs / person.days       
     totalpen += person.costs
+    #print(person.name, '\t', 'mit durchschnittlichen Kosten von', '\t' , person.costs/person.days,)
+                   
 
-  k = results.keys()                     
-  print('\n')
-
-  for i in sorted(k): 
-    print('%8s' % results[i], '\t', '%0i' % i)
+  for result in results: 
+    print(result, '\t', results[result])
 
   print('\n\nTotal Penalties Suffered: ',totalpen)
-      
-## Das Programm startet hier
+
+        
+
 simulateDays(100000) # Simulieren von 100.000 Tagen
