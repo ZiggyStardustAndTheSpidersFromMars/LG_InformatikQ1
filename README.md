@@ -15,5 +15,5 @@ KW 51 - Auswertung Anwendungsbeispiel <br>
 Weihnachten und Neujahr <br>
 <br>
 KW 2 - Einführung in KI <br>
-KW 3 - KI von Alpha Zero zum Marsrover <br>
-KW 4 - Einführung eingebette Systeme (Arduino ???) <br>
+KW 3 - KI Aufgaben und Beipiele mit Python <br>
+KW 4 - HCI Human Computer Interfaces <br>
